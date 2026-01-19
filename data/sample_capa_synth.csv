@@ -1,0 +1,13 @@
+capa_id,created_date,issue_type,priority,subsidiary,activity,contract,equipment_id,owner,due_date,status,root_cause,action_plan,expected_impact
+CAPA-0001,2026-01-03,cost_variance,High,Bécar inc.,transport_inter_usines,CTR-005,EQ-008,Opérations,2026-01-27,Open,,,
+CAPA-0002,2025-12-27,cost_variance,Low,Bécar inc.,transport_copeaux,CTR-002,EQ-010,Finances,2026-01-14,In progress,,,
+CAPA-0003,2025-10-24,cost_variance,High,Bécar inc.,chargement,CTR-001,EQ-009,Finances,2025-11-17,Verified,,,
+CAPA-0004,2025-11-27,cost_variance,Medium,Bécar inc.,transport_inter_usines,CTR-003,EQ-011,Finances,2025-12-22,Open,,,
+CAPA-0005,2025-11-09,cost_variance,Medium,Bécar inc.,chargement,CTR-003,EQ-002,Approvisionnement,2025-11-19,Open,,,
+CAPA-0006,2025-11-23,cost_variance,High,Bécar inc.,transport_inter_usines,CTR-003,EQ-003,Finances,2025-12-06,In progress,,,
+CAPA-0007,2025-10-31,cost_variance,High,Bécar inc.,transport_copeaux,CTR-006,EQ-007,Opérations,2025-11-10,Open,,,
+CAPA-0008,2025-12-07,cost_variance,Low,Bécar inc.,transport_copeaux,CTR-006,EQ-004,Opérations,2025-12-20,In progress,,,
+CAPA-0009,2025-12-06,cost_variance,High,Bécar inc.,transport_inter_usines,CTR-001,EQ-010,Finances,2025-12-15,Open,,,
+CAPA-0010,2025-12-03,cost_variance,Critical,Bécar inc.,transport_copeaux,CTR-002,EQ-011,Finances,2025-12-19,Open,,,
+CAPA-0011,2025-12-10,cost_variance,Critical,Bécar inc.,transport_inter_usines,CTR-001,EQ-011,Opérations,2025-12-23,Open,,,
+CAPA-0012,2025-11-23,cost_variance,High,Bécar inc.,transport_copeaux,CTR-006,EQ-003,Finances,2025-12-20,Open,,,
