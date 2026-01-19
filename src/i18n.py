@@ -83,6 +83,12 @@ _T = {
         "scenario_name": "Nom du scénario",
         "btn_save_scenario": "Enregistrer",
         "compare_to_base": "Comparaison vs base",
+        "not_enough_data_ts": "Données insuffisantes pour afficher la série temporelle (ajuster les filtres).",
+        "chart_cost_per_km_weekly": "Coût/km médian (hebdomadaire)",
+        "chart_profit_by_contract": "Profit par contrat",
+        "download_scored_variances": "Télécharger les variances scorées (CSV)",
+        "download_mir_events": "Télécharger les événements MIR (CSV)",
+        "download_scenario_library": "Télécharger la bibliothèque de scénarios (CSV)",
     },
     "fr": {
         "app_title": "Bécar — Cockpit de contrôle opérationnel (démo)",
@@ -160,6 +166,12 @@ _T = {
         "scenario_name": "Nom du scénario",
         "btn_save_scenario": "Enregistrer",
         "compare_to_base": "Comparaison vs base",
+        "not_enough_data_ts": "Données insuffisantes pour afficher la série temporelle (ajuster les filtres).",
+        "chart_cost_per_km_weekly": "Coût/km médian (hebdomadaire)",
+        "chart_profit_by_contract": "Résultat par contrat",
+        "download_scored_variances": "Télécharger les variances scorées (CSV)",
+        "download_mir_events": "Télécharger les événements MIR (CSV)",
+        "download_scenario_library": "Télécharger la bibliothèque de scénarios (CSV)",
     },
     "en": {
         "app_title": "Bécar — Operational Controller Cockpit (Demo)",
@@ -237,6 +249,12 @@ _T = {
         "scenario_name": "Scenario name",
         "btn_save_scenario": "Save",
         "compare_to_base": "Compare to baseline",
+        "not_enough_data_ts": "Not enough data to display the time series (adjust filters).",
+        "chart_cost_per_km_weekly": "Median cost per km (weekly)",
+        "chart_profit_by_contract": "Profit by contract",
+        "download_scored_variances": "Download scored variances (CSV)",
+        "download_mir_events": "Download MIR events (CSV)",
+        "download_scenario_library": "Download scenario library (CSV)",
     },
 }
 

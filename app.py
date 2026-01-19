@@ -63,7 +63,7 @@ def apply_filters(df: pd.DataFrame, date_range: Optional[Tuple[pd.Timestamp, pd.
     return out
 
 
-def home_tab(locale: str, presenter: bool) -> None:
+def home_tab(locale: str) -> None:
     st.title(t(locale, "app_title"))
     st.caption(t(locale, "app_subtitle"))
 
@@ -96,17 +96,6 @@ def home_tab(locale: str, presenter: bool) -> None:
         f"4) {t(locale, 'value_4')}" ,
         f"5) {t(locale, 'value_5')}" ,
     ]))
-    if presenter:
-        with st.expander("🎙️ Talk track (90 seconds)", expanded=True):
-            st.markdown(
-                """
-- **15s**: Je vous montre un cockpit KPI (coût/km, coût/h, coût/m³) par activité/contrat/équipement.
-- **20s**: On drill‑down sur les écarts vs cibles (carburant, entretien, downtime) et la rentabilité.
-- **20s**: On obtient une liste priorisée d’optimisations d’actifs (utilisation, arrêts, surcoûts).
-- **20s**: On transforme les écarts en **plan de redressement** (CAPA) : qui/quoi/quand/statut.
-- **15s**: Et on prépare l’implantation **MIR** via des gabarits + contrôles qualité + KPIs maintenance.
-                """
-            )
 
     # Briefing PDF
     highlights = []
@@ -270,7 +259,7 @@ def quality_tab(locale: str) -> None:
     st.dataframe(mir_r["issues"], use_container_width=True)
 
 
-def cockpit_tab(locale: str, presenter: bool) -> None:
+def cockpit_tab(locale: str) -> None:
     st.subheader(t(locale, "tabs_cockpit"))
 
     ops_df, targets_df, capa_df, mir_df = get_current_data()
@@ -317,15 +306,27 @@ def cockpit_tab(locale: str, presenter: bool) -> None:
     st.markdown("---")
     left, right = st.columns(2)
 
-    # Time series cost/km
-    ts = df_f.groupby(pd.Grouper(key="date", freq="W"), as_index=False)["cost_per_km"].median(numeric_only=True)
-    fig1 = px.line(ts, x="date", y="cost_per_km", title="Median cost per km (weekly)")
-    left.plotly_chart(fig1, use_container_width=True)
+    # Time series cost/km (weekly)
+    # Use resample to avoid pandas groupby edge cases (and ensure 'date' is a column).
+    ts = (
+        df_f.dropna(subset=["date"])
+            .set_index("date")
+            .sort_index()
+            .resample("W")["cost_per_km"]
+            .median()
+            .reset_index()
+    )
+    ts = ts.dropna(subset=["date", "cost_per_km"])
+    if ts.empty:
+        left.info(t(locale, "not_enough_data_ts"))
+    else:
+        fig1 = px.line(ts, x="date", y="cost_per_km", title=t(locale, "chart_cost_per_km_weekly"))
+        left.plotly_chart(fig1, use_container_width=True)
 
     # Profit by contract
     by_ctr = df_f.groupby("contract", as_index=False).agg({"profit": "sum", "revenue": "sum"})
     by_ctr["margin"] = by_ctr.apply(lambda r: (r.profit / r.revenue) if r.revenue else 0.0, axis=1)
-    fig2 = px.bar(by_ctr.sort_values("profit"), x="contract", y="profit", title="Profit by contract")
+    fig2 = px.bar(by_ctr.sort_values("profit"), x="contract", y="profit", title=t(locale, "chart_profit_by_contract"))
     right.plotly_chart(fig2, use_container_width=True)
 
     st.markdown("---")
@@ -338,11 +339,8 @@ def cockpit_tab(locale: str, presenter: bool) -> None:
 
     st.dataframe(recs, use_container_width=True)
 
-    if presenter:
-        st.caption("Tip: pick 1 recommendation and show the drill‑down in the Variances tab.")
 
-
-def variance_tab(locale: str, presenter: bool) -> None:
+def variance_tab(locale: str) -> None:
     st.subheader(t(locale, "tabs_variance"))
 
     ops_df, targets_df, capa_df, mir_df = get_current_data()
@@ -369,17 +367,6 @@ def variance_tab(locale: str, presenter: bool) -> None:
     grp = grp.sort_values(["risk_score", "profit"], ascending=[False, True])
 
     st.dataframe(grp.head(40), use_container_width=True)
-
-    if presenter:
-        with st.expander("🎙️ Talk track: plan de redressement", expanded=True):
-            st.markdown(
-                """
-- **Choisir une ligne** à risque élevé (risk_score + profit négatif).
-- Expliquer les drivers: variance coût/km vs cible, downtime, carburant.
-- Proposer 2–3 actions (ex: optimisation tournées, maintenance préventive via MIR, revue de taux/contrat).
-- Conclure: on suit l'action dans un tableau CAPA avec échéances + reddition.
-                """
-            )
 
     # Auto-generate CAPA proposals
     if st.button(t(locale, "btn_generate_capa"), key=k("var", "btn_gen_capa")):
@@ -410,7 +397,7 @@ def variance_tab(locale: str, presenter: bool) -> None:
 
     # Export
     st.download_button(
-        "Download scored variances (CSV)",
+        t(locale, "download_scored_variances"),
         data=df_to_csv_bytes(df_scored),
         file_name="becar_scored_variances.csv",
         mime="text/csv",
@@ -444,7 +431,7 @@ def actions_tab(locale: str) -> None:
     )
 
 
-def mir_tab(locale: str, presenter: bool) -> None:
+def mir_tab(locale: str) -> None:
     st.subheader(t(locale, "tabs_mir"))
 
     ops_df, targets_df, capa_df, mir_df = get_current_data()
@@ -473,11 +460,8 @@ def mir_tab(locale: str, presenter: bool) -> None:
     fig = px.bar(agg.sort_values("downtime_hours", ascending=False).head(15), x="equipment_id", y="downtime_hours", title="Downtime by equipment")
     st.plotly_chart(fig, use_container_width=True)
 
-    if presenter:
-        st.caption("MIR readiness = define the data model, enforce quality rules, and automate weekly maintenance KPIs.")
-
     st.download_button(
-        "Download MIR events (CSV)",
+        t(locale, "download_mir_events"),
         data=df_to_csv_bytes(mir_df),
         file_name="becar_mir_events.csv",
         mime="text/csv",
@@ -570,7 +554,7 @@ def scenarios_tab(locale: str) -> None:
         st.dataframe(df_lib, use_container_width=True)
 
         st.download_button(
-            "Download scenario library (CSV)",
+            t(locale, "download_scenario_library"),
             data=df_to_csv_bytes(df_lib),
             file_name="becar_scenarios.csv",
             mime="text/csv",
@@ -595,14 +579,6 @@ def main() -> None:
 
     locale = LOCALES.get(lang_label, "fr_qc")
 
-    with st.sidebar:
-        presenter = st.toggle(
-            t(locale, "sidebar_mode"),
-            value=True,
-            help=t(locale, "sidebar_mode_help"),
-            key=k("sidebar", "presenter"),
-        )
-
     # Password gate
     if not check_password(locale):
         st.stop()
@@ -621,19 +597,19 @@ def main() -> None:
     ])
 
     with tabs[0]:
-        home_tab(locale, presenter)
+        home_tab(locale)
     with tabs[1]:
         data_tab(locale)
     with tabs[2]:
         quality_tab(locale)
     with tabs[3]:
-        cockpit_tab(locale, presenter)
+        cockpit_tab(locale)
     with tabs[4]:
-        variance_tab(locale, presenter)
+        variance_tab(locale)
     with tabs[5]:
         actions_tab(locale)
     with tabs[6]:
-        mir_tab(locale, presenter)
+        mir_tab(locale)
     with tabs[7]:
         scenarios_tab(locale)
 

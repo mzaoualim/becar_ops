@@ -12,6 +12,10 @@ What it demonstrates:
 
 > ⚠️ The app uses **synthetic data by default**. Do not upload confidential data unless you have explicit permission and it is anonymized.
 
+## Notes
+- The app is designed to be shared with a reviewer/HR manager. It intentionally **does not contain interview talk‑track boxes inside the UI**.
+- A private preparation memo is generated in `private/` (ignored by git via `.gitignore`).
+
 ## Run locally
 
 ```bash
@@ -46,4 +50,5 @@ See `docs/DEPLOY_GUIDE.md`.
 - `app.py` – main Streamlit app
 - `src/` – data generation, KPIs, quality checks, exports, i18n, auth
 - `data/` – sample synthetic datasets + CSV templates
-- `docs/` – demo script + deploy guide + real data guide
+- `docs/` – deployment guide + real data guide + app usage guide
+- `private/` – (not committed) author preparation memo
